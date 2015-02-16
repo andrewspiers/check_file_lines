@@ -16,24 +16,33 @@
 
 
 
-USAGE="Usage: $0 filename warninglines criticallines"
+USAGE="\nUsage: $0 filename warninglines criticallines OR "
+USAGE="${USAGE} \r\n to read from stdin, omit filename.\n"
 WC=$(which wc)
 
-echo "$#"
+#echo "$#"
 
-if [ "$#" != "3" ]; then
- echo "${USAGE}"
+if [ "$#" -eq "2" ]; then
+read n <<EOF
+$(${WC} -l)
+EOF
+elif [ "$#" -eq "3" ]; then
+  n="$(${WC} -l "$1" | awk '{print $1}')"
+  filename="${1}"
+  shift
+else
+ printf "${USAGE}"
  exit 3
 fi
 
-n="$(${WC} -l "$1" | awk '{print $1}')"
 
-if [ "${n}" -gt "$3" ]; then
- echo "CRITICAL: $1 lines ${n} > $3"
+
+if [ "${n}" -gt "$2" ]; then
+ echo "CRITICAL: ${filename} lines ${n} > $2"
  exit 2
-elif [ "${n}" -gt "$2" ]; then
- echo "WARNING: $1 lines ${n} > $2"
+elif [ "${n}" -gt "$1" ]; then
+ echo "WARNING: ${filename} lines ${n} > $1"
  exit 1
 fi
 
-echo "OK: $1 lines ${n} < $2 and $3"
+echo "OK: ${filename} lines ${n} < $1 and $2"
