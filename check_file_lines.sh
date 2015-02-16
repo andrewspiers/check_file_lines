@@ -15,9 +15,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
-USAGE="\nUsage: $0 filename warninglines criticallines OR "
-USAGE="${USAGE} \r\n to read from stdin, omit filename.\n"
+read -d '' USAGE <<EOF
+Usage: $0 filename warninglines criticallines OR
+ to read from stdin, omit the filename.
+EOF
 WC=$(which wc)
 
 #echo "$#"
@@ -31,7 +32,7 @@ elif [ "$#" -eq "3" ]; then
   filename="${1}"
   shift
 else
- printf "${USAGE}"
+ echo "${USAGE}"
  exit 3
 fi
 
